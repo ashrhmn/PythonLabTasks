@@ -1,3 +1,5 @@
+from os.path import exists
+
 TODOS = []
 
 
@@ -31,7 +33,7 @@ def print_todos():
 def remove_todo():
     print_todos()
     option = int(input("Enter a number to remove : "))
-    if option < len(TODOS):
+    if option <= len(TODOS):
         del TODOS[option - 1]
         print_todos()
         if is_confirmed("Delete again?"):
@@ -40,7 +42,23 @@ def remove_todo():
         print("Invalid input")
 
 
+def init():
+    if exists("ToDo/data.txt"):
+        data_file = open("ToDo/data.txt", "r")
+        data = data_file.readlines()
+        for line in data:
+            TODOS.append(line.strip())
+        data_file.close()
+
+
+def save_file():
+    data_file = open("ToDo/data.txt", "w")
+    data_file.writelines(f"{line}\n" for line in TODOS)
+    data_file.close()
+
+
 def main():
+    init()
     while True:
         print(
             """
@@ -60,6 +78,7 @@ def main():
             menus[option]()
         else:
             print("Invalid Option")
+    save_file()
 
 
 main()

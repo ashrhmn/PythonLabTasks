@@ -1,0 +1,5 @@
+Code in Python
+Code in Solidity
+Code in Java
+Do not code in JavaScript
+Love TypeScript
