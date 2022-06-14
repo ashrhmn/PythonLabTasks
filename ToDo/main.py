@@ -1,7 +1,7 @@
 TODOS = []
 
 
-def confirmation_to(text):
+def is_confirmed(text):
     decision = input(f"{text} (y,n) : ")
     if decision.lower() == "y":
         return True
@@ -13,7 +13,7 @@ def add_todo():
     text = input("Title : ")
     TODOS.append(text)
     print_todos()
-    if confirmation_to("Add again?"):
+    if is_confirmed("Add again?"):
         add_todo()
 
 
@@ -24,7 +24,7 @@ def print_todos():
             index += 1
             print(index, ". ", item)
     else:
-        if confirmation_to("No TODOs added, Add one?"):
+        if is_confirmed("No TODOs added, Add one?"):
             add_todo()
 
 
@@ -34,7 +34,7 @@ def remove_todo():
     if option < len(TODOS):
         del TODOS[option - 1]
         print_todos()
-        if confirmation_to("Delete again?"):
+        if is_confirmed("Delete again?"):
             remove_todo()
     else:
         print("Invalid input")
