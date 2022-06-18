@@ -1,4 +1,3 @@
-from curses.ascii import isdigit
 from datetime import datetime
 from os.path import exists
 
@@ -89,8 +88,7 @@ def has_time_clash(time):
     return False
 
 
-def add_todo():
-    print("New Todo : ")
+def take_todo_input(return_func):
     description = input("Descriotion : ")
     startDateStr = "0"
     while not is_valid_date(startDateStr):
@@ -100,8 +98,8 @@ def add_todo():
         startTimeStr = input("Start Time : ")
     if has_time_clash(get_datetime(startDateStr, startTimeStr)):
         print("You have another todo at the same time, starting over...")
-        add_todo()
-        return
+        return_func()
+        return None
     endDateStr = "0"
     while not is_valid_date(endDateStr):
         endDateStr = input("End Date : ")
@@ -110,20 +108,25 @@ def add_todo():
         endTimeStr = input("End Time : ")
     if has_time_clash(get_datetime(endDateStr, endTimeStr)):
         print("You have another todo at the same time, starting over...")
-        add_todo()
-        return
+        return_func()
+        return None
     place = input("Place : ")
-    TODOS.append(
-        {
-            "description": description,
-            "place": place,
-            "start_time": get_datetime(startDateStr, startTimeStr).timestamp(),
-            "end_time": get_datetime(endDateStr, endTimeStr).timestamp(),
-        }
-    )
-    print_todos()
-    if is_confirmed("Add again?"):
-        add_todo()
+    return {
+        "description": description,
+        "place": place,
+        "start_time": get_datetime(startDateStr, startTimeStr).timestamp(),
+        "end_time": get_datetime(endDateStr, endTimeStr).timestamp(),
+    }
+
+
+def add_todo():
+    print("New Todo : ")
+    todo = take_todo_input(add_todo)
+    if todo:
+        TODOS.append(todo)
+        print_todos()
+        if is_confirmed("Add again?"):
+            add_todo()
 
 
 def print_todos():
@@ -139,6 +142,19 @@ def print_todos():
     else:
         if is_confirmed("No TODOs added, Add one?"):
             add_todo()
+
+
+def update_todo():
+    print_todos()
+    option = int(input("Enter a number to update : "))
+    if option <= len(TODOS):
+        todo = take_todo_input(update_todo)
+        if todo:
+            TODOS[option - 1] = todo
+            print_todos()
+            print("Updated TODO")
+    else:
+        print("Invalid input")
 
 
 def remove_todo():
@@ -188,14 +204,15 @@ def main():
 
         1. View TODOs
         2. Add New TODO
-        3. Remove TODO
+        3. Update TODO
+        4. Remove TODO
         0. Exit
         """
         )
         option = int(input("Enter an option : "))
         if option == 0:
             break
-        menus = {1: print_todos, 2: add_todo, 3: remove_todo}
+        menus = {1: print_todos, 2: add_todo, 3: update_todo, 4: remove_todo}
         if menus.keys().__contains__(option):
             menus[option]()
         else:
@@ -204,7 +221,3 @@ def main():
 
 
 main()
-
-# init()
-# print_todos()
-# print(has_time_clash(get_datetime("2022-03-18", "12:42")))
