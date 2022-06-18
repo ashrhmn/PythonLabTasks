@@ -1,0 +1,2 @@
+lower()|converts string to lowercase string|"Hello".lower() // hello
+upper()|converts string to uppercase string|"Hello".upper() // HELLO
