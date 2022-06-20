@@ -1,12 +1,15 @@
 from os.path import exists
 
+#   Initialize WORDS as an empty array
 WORDS = []
 
 
+# A function to reduce redundant code
 def invalid_error():
     print("Invalid Input")
 
 
+#   A function to take confirmation from user
 def is_confirmed(text):
     decision = input(f"{text} (y,n) : ")
     if decision.lower() == "y":
@@ -14,6 +17,7 @@ def is_confirmed(text):
     return False
 
 
+#   Initialize words from a text file to the program
 def init():
     if exists("ReservesDictionary/data.txt"):
         data_file = open("ReservesDictionary/data.txt", "r")
@@ -31,6 +35,7 @@ def init():
         data_file.close()
 
 
+#   Function to save all words in a text file
 def save_file():
     data_file = open("ReservesDictionary/data.txt", "w")
     data_file.writelines(
@@ -39,6 +44,7 @@ def save_file():
     data_file.close()
 
 
+#   Take input for a word on adding and updating
 def take_word_inputs():
     name = input("Name : ")
     description = input("Description : ")
@@ -46,6 +52,7 @@ def take_word_inputs():
     return {"name": name, "description": description, "sample": sample}
 
 
+#   Function to add new word
 def add_word():
     print("New word :")
     WORDS.append(take_word_inputs())
@@ -54,6 +61,7 @@ def add_word():
         add_word()
 
 
+#   Function to update an existing word
 def update_word():
     print_all_words()
     option = int(input("Enter a number to update : "))
@@ -66,6 +74,7 @@ def update_word():
         print("Invalid input")
 
 
+#   Print words from arguments to the console
 def print_words(words):
     if len(words) == 0:
         print("\n\nNo word found\n\n")
@@ -79,10 +88,12 @@ def print_words(words):
         print("Sample : ", word["sample"], "\n")
 
 
+#   Print all words to the console
 def print_all_words():
     print_words(WORDS)
 
 
+#   Search for a word
 def search_word(query):
     results = []
     for item in WORDS:
@@ -95,11 +106,13 @@ def search_word(query):
     return results
 
 
+#   Function to print search result to the console
 def show_search_result():
     query = input("Search for word : ")
     print_words(search_word(query))
 
 
+#   Function to remove exisintg word
 def remove_word():
     print_all_words()
     option = int(input("Enter a number to remove : "))
@@ -112,6 +125,7 @@ def remove_word():
         print("Invalid input")
 
 
+#   Main function containing the menu of the application
 def main():
     init()
     while True:

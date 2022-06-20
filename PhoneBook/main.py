@@ -1,12 +1,15 @@
 from os.path import exists
 
+#   Initialize CONTACTS as an empty array
 CONTACTS = []
 
 
+# A function to reduce redundant code
 def invalid_error():
     print("Invalid Input")
 
 
+#   A function to take confirmation from user
 def is_confirmed(text):
     decision = input(f"{text} (y,n) : ")
     if decision.lower() == "y":
@@ -14,6 +17,7 @@ def is_confirmed(text):
     return False
 
 
+#   Initialize contacts from a text file to the program
 def init():
     if exists("PhoneBook/data.txt"):
         data_file = open("PhoneBook/data.txt", "r")
@@ -32,6 +36,7 @@ def init():
         data_file.close()
 
 
+#   Function to save all contacts in a text file
 def save_file():
     data_file = open("PhoneBook/data.txt", "w")
     data_file.writelines(
@@ -41,6 +46,7 @@ def save_file():
     data_file.close()
 
 
+#   Take input for a contacts on adding and updating
 def take_contact_inputs():
     name = input("Name : ")
     address = input("Address : ")
@@ -49,6 +55,7 @@ def take_contact_inputs():
     return {"name": name, "address": address, "email": email, "phones": phones}
 
 
+#   Function to add new contact
 def add_contact():
     print("New Contact :")
     CONTACTS.append(take_contact_inputs())
@@ -57,6 +64,7 @@ def add_contact():
         add_contact()
 
 
+#   Function to update an existing contact
 def update_contact():
     print_all_contacts()
     option = int(input("Enter a number to update : "))
@@ -69,6 +77,7 @@ def update_contact():
         print("Invalid input")
 
 
+#   Print contacts from arguments to the console
 def print_contacts(contacts):
     if len(contacts) == 0:
         print("\n\nNo contact found\n\n")
@@ -83,10 +92,12 @@ def print_contacts(contacts):
         print("Phones : ", ", ".join(contact["phones"]), "\n")
 
 
+#   Print all contacts to the console
 def print_all_contacts():
     print_contacts(CONTACTS)
 
 
+#   Search for a contact
 def search_contact(query):
     results = []
     for item in CONTACTS:
@@ -103,11 +114,13 @@ def search_contact(query):
     return results
 
 
+#   Function to print search result to the console
 def show_search_result():
     query = input("Search for contact : ")
     print_contacts(search_contact(query))
 
 
+#   Function to remove exisintg contact
 def remove_contact():
     print_all_contacts()
     option = int(input("Enter a number to remove : "))
@@ -120,6 +133,7 @@ def remove_contact():
         print("Invalid input")
 
 
+#   Main function containing the menu of the application
 def main():
     init()
     while True:

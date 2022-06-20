@@ -1,13 +1,18 @@
 from datetime import datetime
 from os.path import exists
 
+#   Initializing TODOs as an empty array
 TODOS = []
+VALID_DATE_FORMAT = "yyyy-mm-dd"
+VALID_TIME_FORMAT = "hh:mm"
 
 
+#   A function to make redundant task easier
 def invalid_error():
     print("Invalid Input")
 
 
+#   A function used for taking user confirmation
 def is_confirmed(text):
     decision = input(f"{text} (y,n) : ")
     if decision.lower() == "y":
@@ -15,6 +20,7 @@ def is_confirmed(text):
     return False
 
 
+#   Function to get valid date of a month based on the month and year
 def valid_date_by_month(year):
     return {
         1: 31,
@@ -32,6 +38,7 @@ def valid_date_by_month(year):
     }
 
 
+#   Function to check if a string is a valid date
 def is_valid_date(str):
     if str == "0":
         return False
@@ -53,6 +60,7 @@ def is_valid_date(str):
     return False
 
 
+#   Function to check if a string is a valid time
 def is_valid_time(str):
     if str == "0":
         return False
@@ -71,6 +79,7 @@ def is_valid_time(str):
     return False
 
 
+#   Function to get datetime object from a date string and time string
 def get_datetime(dateStr, timeStr):
     if is_valid_date(dateStr) and is_valid_time(timeStr):
         year, month, day = [int(x) for x in dateStr.split("-")]
@@ -79,6 +88,7 @@ def get_datetime(dateStr, timeStr):
     return None
 
 
+#   Function to check if it has any time clash with existing TODOs
 def has_time_clash(time):
     for item in TODOS:
         if int(time.timestamp() * 1000) in range(
@@ -88,24 +98,25 @@ def has_time_clash(time):
     return False
 
 
+#   Function to take user input on adding and updating TODOs
 def take_todo_input(return_func):
-    description = input("Descriotion : ")
+    description = input("Description : ")
     startDateStr = "0"
     while not is_valid_date(startDateStr):
-        startDateStr = input("Start Date : ")
+        startDateStr = input(f"Start Date ({VALID_DATE_FORMAT}) : ")
     startTimeStr = "0"
     while not is_valid_time(startTimeStr):
-        startTimeStr = input("Start Time : ")
+        startTimeStr = input(f"Start Time ({VALID_TIME_FORMAT}) : ")
     if has_time_clash(get_datetime(startDateStr, startTimeStr)):
         print("You have another todo at the same time, starting over...")
         return_func()
         return None
     endDateStr = "0"
     while not is_valid_date(endDateStr):
-        endDateStr = input("End Date : ")
+        endDateStr = input(f"End Date ({VALID_DATE_FORMAT}) : ")
     endTimeStr = "0"
     while not is_valid_time(endTimeStr):
-        endTimeStr = input("End Time : ")
+        endTimeStr = input(f"End Time ({VALID_TIME_FORMAT}) : ")
     if has_time_clash(get_datetime(endDateStr, endTimeStr)):
         print("You have another todo at the same time, starting over...")
         return_func()
@@ -119,6 +130,7 @@ def take_todo_input(return_func):
     }
 
 
+#   Function for adding new todo item
 def add_todo():
     print("New Todo : ")
     todo = take_todo_input(add_todo)
@@ -129,6 +141,7 @@ def add_todo():
             add_todo()
 
 
+#   Function for printing out all todos to the console
 def print_todos():
     if len(TODOS) > 0:
         index = 0
@@ -144,6 +157,7 @@ def print_todos():
             add_todo()
 
 
+#   Function for updating an existing todo item
 def update_todo():
     print_todos()
     option = int(input("Enter a number to update : "))
@@ -157,6 +171,7 @@ def update_todo():
         print("Invalid input")
 
 
+#   Function for removing an existing todo item
 def remove_todo():
     print_todos()
     option = int(input("Enter a number to remove : "))
@@ -169,6 +184,7 @@ def remove_todo():
         print("Invalid input")
 
 
+#   Function to initialize global variable TODO with todo items from data.txt
 def init():
     if exists("ToDo/data.txt"):
         data_file = open("ToDo/data.txt", "r")
@@ -187,6 +203,7 @@ def init():
         data_file.close()
 
 
+#   Function to save all todo items to data.txt file
 def save_file():
     data_file = open("ToDo/data.txt", "w")
     data_file.writelines(
@@ -195,6 +212,7 @@ def save_file():
     data_file.close()
 
 
+#   Main function containing the menu of application
 def main():
     init()
     while True:
@@ -220,4 +238,5 @@ def main():
     save_file()
 
 
+#   Executing main function to start execution
 main()
