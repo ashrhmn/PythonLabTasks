@@ -136,36 +136,41 @@ def add_todo():
     todo = take_todo_input(add_todo)
     if todo:
         TODOS.append(todo)
-        print_todos()
+        print_all_todos()
         if is_confirmed("Add again?"):
             add_todo()
 
 
-#   Function for printing out all todos to the console
-def print_todos():
-    if len(TODOS) > 0:
+#   Function for printing out args todos
+def print_todos(todos):
+    if len(todos) > 0:
         index = 0
-        for item in TODOS:
+        for item in todos:
             index += 1
             print("\n", index, ". ")
             print(item["description"])
             print("Start : ", datetime.fromtimestamp(item["start_time"]))
             print("End : ", datetime.fromtimestamp(item["end_time"]))
             print("Place : ", item["place"], "\n")
-    else:
+
+
+#   Function for printing out all todos to the console
+def print_all_todos():
+    print_todos(TODOS)
+    if len(TODOS) == 0:
         if is_confirmed("No TODOs added, Add one?"):
             add_todo()
 
 
 #   Function for updating an existing todo item
 def update_todo():
-    print_todos()
+    print_all_todos()
     option = int(input("Enter a number to update : "))
     if option <= len(TODOS):
         todo = take_todo_input(update_todo)
         if todo:
             TODOS[option - 1] = todo
-            print_todos()
+            print_all_todos()
             print("Updated TODO")
     else:
         print("Invalid input")
@@ -173,15 +178,30 @@ def update_todo():
 
 #   Function for removing an existing todo item
 def remove_todo():
-    print_todos()
+    print_all_todos()
     option = int(input("Enter a number to remove : "))
     if option <= len(TODOS):
         del TODOS[option - 1]
-        print_todos()
+        print_all_todos()
         if is_confirmed("Delete again?"):
             remove_todo()
     else:
         print("Invalid input")
+
+
+#   Function to print all upcoming task for today
+def today_tasks():
+    now = datetime.now()
+    end_of_today = datetime(now.year, now.month, now.day, 23, 59)
+    print("Upcoming tasks for today : ")
+    print_todos(
+        [
+            todo
+            for todo in TODOS
+            if int(todo["start_time"] * 1000) > int(now.timestamp() * 1000)
+            and int(todo["start_time"] * 1000) < int(end_of_today.timestamp() * 1000)
+        ]
+    )
 
 
 #   Function to initialize global variable TODO with todo items from data.txt
@@ -221,16 +241,23 @@ def main():
         Welcome to TodoList
 
         1. View TODOs
-        2. Add New TODO
-        3. Update TODO
-        4. Remove TODO
+        2. Upcoming TODOs Today
+        3. Add New TODO
+        4. Update TODO
+        5. Remove TODO
         0. Exit
         """
         )
         option = int(input("Enter an option : "))
         if option == 0:
             break
-        menus = {1: print_todos, 2: add_todo, 3: update_todo, 4: remove_todo}
+        menus = {
+            1: print_all_todos,
+            2: today_tasks,
+            3: add_todo,
+            4: update_todo,
+            5: remove_todo,
+        }
         if menus.keys().__contains__(option):
             menus[option]()
         else:
